@@ -1,0 +1,1 @@
+(()=>{const e=window.counterPage;if(typeof e!="string"||e==="")return;try{fetch(`./counter.php?page=${encodeURIComponent(e)}`,{method:"GET",cache:"no-store",credentials:"same-origin",keepalive:true}).catch(()=>{})}catch(e){}})();

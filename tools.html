@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collect the Tools</title>
+
+  <link rel="stylesheet" href="./css/tools.css" />
+</head>
+<body>
+
+  <div class="page">
+    <div class="wrapper">
+      <h1>Collect the Tools</h1>
+
+      <div class="panel">
+        <div>Score: <span id="score">0</span></div>
+        <div>Highest Score: <span id="highestScore">0</span></div>
+        <div>Lives: <span id="lives">3</span></div>
+        <div>Status: <span id="status">Ready</span></div>
+      </div>
+
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+      <div class="controls">
+        <button id="startBtn">Start</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+
+      <div class="hint">
+        Gunakan tombol panah kiri/kanan atau gerakkan mouse untuk menangkap tool yang jatuh.
+      </div>
+    </div>
+    <a class="back-link" href="./index.html">Kembali ke halaman utama</a>
+  </div>
+
+  <script src="./js/tools.js"></script>
+
+</body>
+</html>

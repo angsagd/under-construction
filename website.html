@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Build the Website Tower</title>
+
+  <link rel="stylesheet" href="./css/website.css" />
+</head>
+<body>
+
+  <div class="page">
+    <div class="wrapper">
+      <h1>Build the Website Tower</h1>
+
+      <div class="panel">
+        <div>Score: <span id="score">0</span></div>
+        <div>Blocks: <span id="blocks">0</span></div>
+        <div>Highest Score: <span id="highestScore">0</span></div>
+        <div>Status: <span id="status">Ready</span></div>
+      </div>
+
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+      <div class="controls">
+        <button id="startBtn">Start</button>
+        <button id="dropBtn">Drop Block</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+
+      <div class="hint">
+        Tekan Space atau tombol Drop Block saat blok berada tepat di atas tower. Semakin presisi, semakin tinggi skor.
+      </div>
+    </div>
+    <a class="back-link" href="./index.html">Kembali ke halaman utama</a>
+  </div>
+
+  <script src="./js/website.js"></script>
+
+</body>
+</html>

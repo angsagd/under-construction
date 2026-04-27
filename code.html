@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eat the Code</title>
+
+  <link rel="stylesheet" href="./css/code.css" />
+</head>
+<body>
+
+  <div class="page">
+    <div class="wrapper">
+      <h1>Eat the Code</h1>
+
+      <div class="panel">
+        <div>Score: <span id="score">0</span></div>
+        <div>Highest Score: <span id="highestScore">0</span></div>
+        <div>Status: <span id="status">Ready</span></div>
+      </div>
+
+      <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+      <div class="controls">
+        <button id="startBtn">Start</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+
+      <div class="hint">
+        Gunakan tombol panah keyboard. Makan potongan kode warna-warni, jangan menabrak dinding atau badan sendiri.
+      </div>
+    </div>
+    <a class="back-link" href="./index.html">Kembali ke halaman utama</a>
+  </div>
+
+  <script src="./js/code.js"></script>
+
+</body>
+</html>

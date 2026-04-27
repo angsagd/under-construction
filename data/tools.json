@@ -1,0 +1,12 @@
+[
+  { "name": "Wrench", "icon": "🔧", "score": 10 },
+  { "name": "Hammer", "icon": "🔨", "score": 10 },
+  { "name": "Gear", "icon": "⚙️", "score": 15 },
+  { "name": "Brick", "icon": "🧱", "score": 10 },
+  { "name": "Laptop", "icon": "💻", "score": 20 },
+  { "name": "Keyboard", "icon": "⌨️", "score": 15 },
+  { "name": "Screwdriver", "icon": "🪛", "score": 10 },
+  { "name": "Nut and Bolt", "icon": "🔩", "score": 15 },
+  { "name": "Package", "icon": "📦", "score": 10 },
+  { "name": "Rocket", "icon": "🚀", "score": 25 }
+]

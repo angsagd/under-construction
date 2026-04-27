@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deploy Button Challenge</title>
+
+  <link rel="stylesheet" href="./css/deploy.css" />
+</head>
+<body>
+
+  <div class="wrapper">
+    <h1>Deploy Button Challenge</h1>
+
+    <div class="panel">
+      <div>Score: <span id="score">0</span></div>
+      <div>Round: <span id="round">1</span></div>
+      <div>Highest Score: <span id="highestScore">0</span></div>
+      <div>Status: <span id="status">Ready</span></div>
+    </div>
+
+    <div class="game-box">
+      <div class="terminal" id="terminal">
+        <div class="terminal-line">&gt; npm run build</div>
+        <div class="terminal-line">&gt; waiting for deployment signal...</div>
+      </div>
+
+      <div class="bar-area" id="barArea">
+        <div class="danger-zone"></div>
+        <div class="safe-zone" id="safeZone"></div>
+        <div class="cursor" id="cursor"></div>
+      </div>
+
+      <button class="deploy-button" id="deployBtn">DEPLOY</button>
+
+      <div class="small-buttons">
+        <button id="startBtn">Start</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+
+      <div class="hint">
+        Tekan DEPLOY atau Space saat indikator kuning berada di zona hijau. Semakin dekat ke tengah zona hijau, skor semakin tinggi.
+      </div>
+    </div>
+
+    <a class="back-link" href="./index.html">Kembali ke halaman utama</a>
+  </div>
+
+  <script src="./js/deploy.js"></script>
+
+</body>
+</html>

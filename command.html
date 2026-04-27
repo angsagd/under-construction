@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Type Your Command</title>
+
+  <link rel="stylesheet" href="./css/command.css" />
+</head>
+<body>
+
+  <div class="page">
+    <div class="terminal">
+      <h1>Type Your Command</h1>
+
+      <div class="info">
+        <div>Score: <span id="score">0</span></div>
+        <div>Time: <span id="time">60</span>s</div>
+        <div>Highest: <span id="highestScore">0</span></div>
+      </div>
+
+      <div class="command-box" id="commandText">
+        Klik Start untuk mulai mengetik command.
+      </div>
+
+      <input
+        type="text"
+        id="commandInput"
+        placeholder="Ketik command di sini..."
+        autocomplete="off"
+        disabled
+      />
+
+      <div class="message" id="message"></div>
+
+      <div class="buttons">
+        <button id="startBtn">Start</button>
+        <button id="restartBtn" class="hidden">Restart</button>
+      </div>
+    </div>
+    <a class="back-link" href="./index.html">Kembali ke halaman utama</a>
+  </div>
+
+  <script src="./js/command.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fix the Bug</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #111827, #05070d 70%);
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      color: #ff4d6d;
+      text-shadow: 0 0 12px rgba(255, 77, 109, 0.8);
+    }
+
+    .panel {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .panel div {
+      flex: 1;
+      min-width: 140px;
+      border: 1px solid rgba(255, 77, 109, 0.45);
+      background: rgba(255, 77, 109, 0.07);
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    #gameArea {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      height: 500px;
+      margin: 0 auto;
+      background:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px),
+        #070b14;
+      background-size: 40px 40px;
+      border: 2px solid #ff4d6d;
+      border-radius: 14px;
+      box-shadow: 0 0 25px rgba(255, 77, 109, 0.25);
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    .bug {
+      position: absolute;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      cursor: pointer;
+      user-select: none;
+      animation: pop 0.2s ease-out, pulse 0.8s infinite alternate;
+      filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.8));
+    }
+
+    .bug:hover {
+      transform: scale(1.12);
+    }
+
+    .boom {
+      position: absolute;
+      color: #00ff99;
+      font-weight: bold;
+      pointer-events: none;
+      animation: boom 0.45s ease-out forwards;
+      text-shadow: 0 0 10px #00ff99;
+    }
+
+    .controls {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: transparent;
+      color: #ff4d6d;
+      border: 1px solid #ff4d6d;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #ff4d6d;
+      color: #05070d;
+    }
+
+    .hint {
+      margin-top: 12px;
+      color: #ffc1cc;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    @keyframes boom {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-25px) scale(1.4);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <h1>Fix the Bug</h1>
+
+    <div class="panel">
+      <div>Score: <span id="score">0</span></div>
+      <div>Time: <span id="time">30</span>s</div>
+      <div>Highest Score: <span id="highestScore">0</span></div>
+      <div>Status: <span id="status">Ready</span></div>
+    </div>
+
+    <div id="gameArea"></div>
+
+    <div class="controls">
+      <button id="startBtn">Start</button>
+      <button id="restartBtn">Restart</button>
+    </div>
+
+    <div class="hint">
+      Klik bug 🐞 secepat mungkin sebelum hilang. Semakin cepat level naik, semakin banyak bug muncul.
+    </div>
+  </div>
+
+  <script>
+    const gameArea = document.getElementById("gameArea");
+    const scoreEl = document.getElementById("score");
+    const timeEl = document.getElementById("time");
+    const highestScoreEl = document.getElementById("highestScore");
+    const statusEl = document.getElementById("status");
+    const startBtn = document.getElementById("startBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const HIGHEST_SCORE_KEY = "fixTheBugHighestScore";
+
+    let score = 0;
+    let timeLeft = 30;
+    let isPlaying = false;
+    let timer = null;
+    let bugSpawner = null;
+    let spawnSpeed = 850;
+    let bugLife = 1400;
+
+    const bugIcons = ["🐞", "🪲", "🦟", "🐛", "🕷️"];
+
+    highestScoreEl.textContent = localStorage.getItem(HIGHEST_SCORE_KEY) || 0;
+
+    function initGame() {
+      clearInterval(timer);
+      clearInterval(bugSpawner);
+
+      score = 0;
+      timeLeft = 30;
+      spawnSpeed = 850;
+      bugLife = 1400;
+      isPlaying = false;
+
+      scoreEl.textContent = score;
+      timeEl.textContent = timeLeft;
+      statusEl.textContent = "Ready";
+      gameArea.innerHTML = "";
+    }
+
+    function startGame() {
+      if (isPlaying) return;
+
+      isPlaying = true;
+      statusEl.textContent = "Playing";
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timeEl.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+
+      bugSpawner = setInterval(spawnBug, spawnSpeed);
+      spawnBug();
+    }
+
+    function restartGame() {
+      initGame();
+      startGame();
+    }
+
+    function spawnBug() {
+      if (!isPlaying) return;
+
+      const bug = document.createElement("div");
+      bug.className = "bug";
+      bug.textContent = bugIcons[Math.floor(Math.random() * bugIcons.length)];
+
+      const areaRect = gameArea.getBoundingClientRect();
+      const size = 48;
+      const maxX = gameArea.clientWidth - size;
+      const maxY = gameArea.clientHeight - size;
+
+      bug.style.left = `${Math.random() * maxX}px`;
+      bug.style.top = `${Math.random() * maxY}px`;
+
+      bug.addEventListener("click", (event) => {
+        event.stopPropagation();
+
+        if (!isPlaying) return;
+
+        score += 10;
+        scoreEl.textContent = score;
+
+        showBoom(bug.offsetLeft, bug.offsetTop);
+        bug.remove();
+
+        increaseDifficulty();
+      });
+
+      gameArea.appendChild(bug);
+
+      setTimeout(() => {
+        if (bug.parentElement && isPlaying) {
+          bug.remove();
+        }
+      }, bugLife);
+    }
+
+    function showBoom(x, y) {
+      const boom = document.createElement("div");
+      boom.className = "boom";
+      boom.textContent = "+10";
+      boom.style.left = `${x + 10}px`;
+      boom.style.top = `${y}px`;
+
+      gameArea.appendChild(boom);
+
+      setTimeout(() => {
+        boom.remove();
+      }, 450);
+    }
+
+    function increaseDifficulty() {
+      if (score % 50 !== 0) return;
+
+      spawnSpeed = Math.max(280, spawnSpeed - 90);
+      bugLife = Math.max(550, bugLife - 90);
+
+      clearInterval(bugSpawner);
+      bugSpawner = setInterval(spawnBug, spawnSpeed);
+
+      statusEl.textContent = "Level Up!";
+      setTimeout(() => {
+        if (isPlaying) statusEl.textContent = "Playing";
+      }, 700);
+    }
+
+    function endGame() {
+      clearInterval(timer);
+      clearInterval(bugSpawner);
+      isPlaying = false;
+
+      const highestScore = Number(localStorage.getItem(HIGHEST_SCORE_KEY)) || 0;
+
+      if (score > highestScore) {
+        localStorage.setItem(HIGHEST_SCORE_KEY, score);
+        highestScoreEl.textContent = score;
+        statusEl.textContent = "New Highest Score!";
+      } else {
+        statusEl.textContent = "Game Over";
+      }
+
+      gameArea.innerHTML = `
+        <div style="
+          position:absolute;
+          inset:0;
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          justify-content:center;
+          background:rgba(0,0,0,0.72);
+          color:#ff4d6d;
+          text-shadow:0 0 12px #ff4d6d;
+        ">
+          <div style="font-size:42px;font-weight:bold;">GAME OVER</div>
+          <div style="font-size:22px;color:#00ff99;margin-top:12px;">
+            Final Score: ${score}
+          </div>
+        </div>
+      `;
+    }
+
+    startBtn.addEventListener("click", startGame);
+    restartBtn.addEventListener("click", restartGame);
+
+    initGame();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Launch Countdown Puzzle</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #111827, #05070d 70%);
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 760px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #ffcc00;
+      text-shadow: 0 0 12px rgba(255, 204, 0, 0.8);
+      margin-bottom: 12px;
+    }
+
+    .panel {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .panel div {
+      flex: 1;
+      min-width: 140px;
+      padding: 10px;
+      border: 1px solid rgba(255, 204, 0, 0.45);
+      background: rgba(255, 204, 0, 0.07);
+      border-radius: 8px;
+    }
+
+    .puzzle {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 60%;
+      max-width: 456px;
+      margin: 0 auto;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #ffcc00;
+      border-radius: 10px;
+      padding: 6px;
+      box-shadow: 0 0 25px rgba(255, 204, 0, 0.22);
+    }
+
+    .tile {
+      aspect-ratio: 1 / 1;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 204, 0, 0.4);
+      background: #0b1020;
+      color: #ffcc00;
+      font-size: clamp(19px, 4.8vw, 38px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: 0.15s;
+      text-shadow: 0 0 10px currentColor;
+    }
+
+    .tile:hover {
+      transform: scale(0.97);
+      background: #151b2e;
+    }
+
+    .empty {
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      cursor: default;
+      box-shadow: none;
+      text-shadow: none;
+    }
+
+    .controls {
+      margin-top: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background: transparent;
+      color: #ffcc00;
+      border: 1px solid #ffcc00;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #ffcc00;
+      color: #05070d;
+    }
+
+    .hint {
+      margin-top: 12px;
+      color: #fff1a8;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    .launch {
+      margin-top: 14px;
+      font-size: 28px;
+      color: #00ff99;
+      text-shadow: 0 0 12px #00ff99;
+      min-height: 36px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <h1>Launch Countdown Puzzle</h1>
+
+    <div class="panel">
+      <div>Time: <span id="time">0</span>s</div>
+      <div>Moves: <span id="moves">0</span></div>
+      <div>Best Time: <span id="bestTime">-</span></div>
+      <div>Status: <span id="status">Ready</span></div>
+    </div>
+
+    <div class="puzzle" id="puzzle"></div>
+
+    <div class="launch" id="launchText"></div>
+
+    <div class="controls">
+      <button id="startBtn">Start</button>
+      <button id="shuffleBtn">Shuffle</button>
+      <button id="restartBtn">Restart</button>
+    </div>
+
+    <div class="hint">
+      Susun potongan menjadi urutan: 🚀 3 2 1 🔥 HTML CSS JS. Klik tile di sekitar ruang kosong untuk menggeser.
+    </div>
+  </div>
+
+  <script>
+    const puzzleEl = document.getElementById("puzzle");
+    const timeEl = document.getElementById("time");
+    const movesEl = document.getElementById("moves");
+    const bestTimeEl = document.getElementById("bestTime");
+    const statusEl = document.getElementById("status");
+    const launchTextEl = document.getElementById("launchText");
+
+    const startBtn = document.getElementById("startBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const BEST_TIME_KEY = "launchCountdownPuzzleBestTime";
+
+    const solvedTiles = ["🚀", "3", "2", "1", "🔥", "HTML", "CSS", "JS", ""];
+    let tiles = [...solvedTiles];
+
+    let time = 0;
+    let moves = 0;
+    let timer = null;
+    let isPlaying = false;
+
+    const savedBest = localStorage.getItem(BEST_TIME_KEY);
+    bestTimeEl.textContent = savedBest ? `${savedBest}s` : "-";
+
+    function renderPuzzle() {
+      puzzleEl.innerHTML = "";
+
+      tiles.forEach((tile, index) => {
+        const tileEl = document.createElement("div");
+        tileEl.className = tile === "" ? "tile empty" : "tile";
+        tileEl.textContent = tile;
+        tileEl.addEventListener("click", () => moveTile(index));
+        puzzleEl.appendChild(tileEl);
+      });
+    }
+
+    function startGame() {
+      if (isPlaying) return;
+
+      isPlaying = true;
+      statusEl.textContent = "Playing";
+      launchTextEl.textContent = "";
+
+      timer = setInterval(() => {
+        time++;
+        timeEl.textContent = time;
+      }, 1000);
+    }
+
+    function resetGame() {
+      clearInterval(timer);
+      time = 0;
+      moves = 0;
+      isPlaying = false;
+      tiles = [...solvedTiles];
+
+      timeEl.textContent = time;
+      movesEl.textContent = moves;
+      statusEl.textContent = "Ready";
+      launchTextEl.textContent = "";
+
+      shuffleTiles();
+      renderPuzzle();
+    }
+
+    function shuffleTiles() {
+      tiles = [...solvedTiles];
+
+      for (let i = 0; i < 150; i++) {
+        const emptyIndex = tiles.indexOf("");
+        const movable = getMovableIndexes(emptyIndex);
+        const randomIndex = movable[Math.floor(Math.random() * movable.length)];
+
+        [tiles[emptyIndex], tiles[randomIndex]] = [tiles[randomIndex], tiles[emptyIndex]];
+      }
+
+      moves = 0;
+      movesEl.textContent = moves;
+      statusEl.textContent = "Shuffled";
+      launchTextEl.textContent = "";
+      renderPuzzle();
+    }
+
+    function getMovableIndexes(emptyIndex) {
+      const row = Math.floor(emptyIndex / 3);
+      const col = emptyIndex % 3;
+      const indexes = [];
+
+      if (row > 0) indexes.push(emptyIndex - 3);
+      if (row < 2) indexes.push(emptyIndex + 3);
+      if (col > 0) indexes.push(emptyIndex - 1);
+      if (col < 2) indexes.push(emptyIndex + 1);
+
+      return indexes;
+    }
+
+    function moveTile(index) {
+      if (!isPlaying) return;
+
+      const emptyIndex = tiles.indexOf("");
+      const movable = getMovableIndexes(emptyIndex);
+
+      if (!movable.includes(index)) return;
+
+      [tiles[emptyIndex], tiles[index]] = [tiles[index], tiles[emptyIndex]];
+
+      moves++;
+      movesEl.textContent = moves;
+
+      renderPuzzle();
+      checkWin();
+    }
+
+    function checkWin() {
+      const solved = tiles.every((tile, index) => tile === solvedTiles[index]);
+
+      if (!solved) return;
+
+      clearInterval(timer);
+      isPlaying = false;
+
+      statusEl.textContent = "Launch Success!";
+      launchTextEl.textContent = "🚀 LAUNCH SUCCESS!";
+
+      const bestTime = Number(localStorage.getItem(BEST_TIME_KEY)) || 0;
+
+      if (bestTime === 0 || time < bestTime) {
+        localStorage.setItem(BEST_TIME_KEY, time);
+        bestTimeEl.textContent = `${time}s`;
+        statusEl.textContent = "New Best Time!";
+      }
+    }
+
+    startBtn.addEventListener("click", startGame);
+    shuffleBtn.addEventListener("click", () => {
+      clearInterval(timer);
+      time = 0;
+      isPlaying = false;
+      timeEl.textContent = time;
+      shuffleTiles();
+    });
+    restartBtn.addEventListener("click", resetGame);
+
+    resetGame();
+  </script>
+
+</body>
+</html>

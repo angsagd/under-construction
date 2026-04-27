@@ -9,7 +9,7 @@ Each game turns a familiar web-development task into a quick interaction: collec
 - `index.html` is the main under-construction landing page.
 - `tools.html` is a catch-the-falling-tools game.
 - `code.html` is a code-themed snake game.
-- `error.html` is a 404 runner game.
+- `errors.html` is a 404 runner game.
 - `website.html` is a tower-stacking game.
 - `bugs.html` is a bug-clicking game.
 - `command.html` is a command typing challenge.

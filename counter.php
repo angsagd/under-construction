@@ -8,7 +8,7 @@ $allowedPages = [
     'command',
     'countdown',
     'deploy',
-    'error',
+    'errors',
     'tools',
     'website',
 ];

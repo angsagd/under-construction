@@ -1,18 +1,6 @@
 <?php
 declare(strict_types=1);
 
-$allowedPages = [
-    'index',
-    'bugs',
-    'code',
-    'command',
-    'countdown',
-    'deploy',
-    'errors',
-    'tools',
-    'website',
-];
-
 function finish(): void
 {
     http_response_code(204);
@@ -117,7 +105,7 @@ if ($origin !== null && $origin !== '') {
 
 $page = $_GET['page'] ?? '';
 
-if (!is_string($page) || !in_array($page, $allowedPages, true)) {
+if (!is_string($page) || !preg_match('/^[a-z0-9][a-z0-9_-]*\.html$/i', $page)) {
     finish();
 }
 
